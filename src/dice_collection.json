@@ -1,0 +1,27 @@
+[
+	{
+		"color": "red",
+		"basic_atk": 10,
+		"basic_atk_speed": 1
+	},
+	{
+		"color": "blue",
+		"basic_atk": 10,
+		"basic_atk_speed": 1
+	},
+	{
+		"color": "green",
+		"basic_atk": 10,
+		"basic_atk_speed": 1
+	},
+	{
+		"color": "orange",
+		"basic_atk": 10,
+		"basic_atk_speed": 1
+	},
+	{
+		"color": "purple",
+		"basic_atk": 10,
+		"basic_atk_speed": 1
+	}
+]
