@@ -1,3 +1,6 @@
+from pygame.math import Vector2
+from src.constants import *
+
 class Color:
 	WHITE  = (255, 255, 255)
 	BLACK  = (0, 0, 0)
@@ -23,3 +26,6 @@ def darken(color: tuple[int, int, int], factor: float = 0.2) -> tuple[int, int, 
 	g = max(int(g * (1 - factor)), 0)
 	b = max(int(b * (1 - factor)), 0)
 	return (r, g, b)
+
+def in_screen(pos: Vector2):
+	return 0 <= pos.x <= WIDTH and 0 <= pos.y <= HEIGHT

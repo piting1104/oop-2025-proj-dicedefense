@@ -1,7 +1,7 @@
 from src.utils import Color, lighten
 from src.button import *
 from src.constants import *
-from src.dice import Dice, CollectionDice
+from src.dice import Dice, CollectionDice, TYPE_COLOR
 from src.enemy import Enemy
 from src.custom_dice import *
 from src import font_manager
@@ -14,6 +14,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Dice Defense")
 font_manager.init_font()
 
+# drawing grid
 def draw_grid():
 	outside_rect = pygame.Rect(GRID_POS - MARGIN, GRID_POS - MARGIN, CELL_SIZE * GRID_COLS + GAP * (GRID_COLS - 1) + MARGIN * 2, CELL_SIZE * GRID_ROWS + GAP * (GRID_ROWS - 1) + MARGIN * 2)
 	pygame.draw.rect(screen, Color.GRAY, outside_rect, 2, 5)
@@ -23,15 +24,11 @@ def draw_grid():
 			pygame.draw.rect(screen, lighten(Color.GRAY, 0.4), rect, 0, 5)
 
 def draw_moving_line():
-	DIST = (GRID_POS - MARGIN) / 2
-	lt_pos = (DIST, DIST)
-	rt_pos = (WIDTH - DIST, DIST)
-	ld_pos = (DIST, DIST * 2 + CELL_SIZE * 4)
-	rd_pos = (WIDTH - DIST, DIST * 2 + CELL_SIZE * 4)
-	pygame.draw.line(screen, Color.GRAY, lt_pos, rt_pos, 2)
-	pygame.draw.line(screen, Color.GRAY, lt_pos, ld_pos, 2)
-	pygame.draw.line(screen, Color.GRAY, rt_pos, rd_pos, 2)
+	pygame.draw.line(screen, Color.GRAY, LEFT_TOP, RIGHT_TOP, 2)
+	pygame.draw.line(screen, Color.GRAY, LEFT_TOP, LEFT_DOWN, 2)
+	pygame.draw.line(screen, Color.GRAY, RIGHT_TOP, RIGHT_DOWN, 2)
 
+# initialize dice collection and drawing
 my_dices = get_dice_collection()
 
 dice_collection = []
@@ -39,21 +36,12 @@ def draw_dice_collection(mouse_pos):
 	dice_collection.clear()
 	rect = pygame.Rect(50, 420, 400, 80)
 	pygame.draw.rect(screen, lighten(Color.GRAY, 0.3), rect, 0, 5)
-	for d, j in list(zip(my_dices, [-2, -1, 0, 1, 2])):
-		dice = CollectionDice(250 + j * 76, 460, 60, d.color, d.level)
+	for i, d in enumerate(my_dices):
+		dice = CollectionDice(250 + (i - 2) * 76, 460, 60, TYPE_COLOR[i], d.level)
 		dice.draw(screen, mouse_pos)
 		dice_collection.append(dice)
 
-clock = pygame.time.Clock()
-
-# TODO: enemies
-enemies = [
-	Enemy(50, 100, 450),
-	Enemy(50, 180, 400),
-	Enemy(50, 260, 400),
-]
-###############
-
+# dice buying initialization
 dices_on_grid = []
 available_grids = []
 for i in range(GRID_ROWS):
@@ -66,12 +54,19 @@ def purchase_dice():
 		return
 	
 	grid = random.choice(available_grids)
-	dice = random.choice(my_dices)
-	dices_on_grid.append(Dice(grid[0], grid[1], dice.color, 1))
+	type = random.choice([i for i in range(5)])
+	dices_on_grid.append(Dice(grid[0], grid[1], type, 1, my_dices[type].basic_atk, my_dices[type].basic_atk_speed))
 	available_grids.remove(grid)
 
-
 buying_button = CircleButton((WIDTH / 2, 350), 35, "Buy")
+
+# bullet initialization
+bullet_on_screen = []
+
+# enemy initialization
+enemies = [
+	Enemy(LEFT_DOWN, 2000),
+]
 
 while True:
 	mouse_pos = pygame.mouse.get_pos()
@@ -96,11 +91,27 @@ while True:
 
 	buying_button.draw(screen, mouse_pos)
 
+	levels = list(map(lambda d: d.level, dice_collection))
 	for dice in dices_on_grid:
+		dice.periodic_attack(bullet_on_screen, enemies, levels)
 		dice.draw(screen)
+	
+	for bullet in bullet_on_screen:
+		for enemy in enemies:
+			if enemy.get_rect().collidepoint(bullet.pos):
+				enemy.damage(bullet.atk)
+				bullet.show == False
+				break
+		bullet.move()
+		bullet.draw(screen)
+	
+	bullet_on_screen = list(filter(lambda b: b.show and in_screen(b.pos), bullet_on_screen))
 
 	for enemy in enemies:
+		state = enemy.move()
 		enemy.draw(screen)
+	
+	enemies = list(filter(lambda e: e.hp > 0, enemies))
 
 	pygame.display.flip()
-	clock.tick(60)
+	pygame.time.delay(40)

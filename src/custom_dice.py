@@ -1,31 +1,20 @@
 from src.utils import *
 import json
 
-color_dict = {
-	"red": Color.RED,
-	"blue": Color.BLUE,
-	"orange": Color.ORANGE,
-	"green": Color.GREEN,
-	"purple": Color.PURPLE
-}
-
 class CustomDice:
-	def __init__(self, color, basic_atk, basic_atk_speed):
-		self.color = color
+	def __init__(self, basic_atk, basic_atk_speed):
 		self.basic_atk = basic_atk
 		self.basic_atk_speed = basic_atk_speed
 		self.level = 1
-	
-	def from_json(json):
-		return CustomDice(color_dict[json["color"]], json["basic_atk"], json["basic_atk_speed"])
 	
 	def upgrade(self):
 		self.level += 1
 
 def get_dice_collection() -> list[CustomDice]:
-	json_list = json.load(open("src/dice_collection.json", "r"))
+	js = json.load(open("src/dice_collection.json", "r"))
 	collection = []
-	for j in json_list:
-		collection.append(CustomDice.from_json(j))
+	for i in range(5):
+		dice_json = js[f"dice{i+1}"]
+		collection.append(CustomDice(dice_json["basic_atk"], dice_json["basic_atk_speed"]))
 	
 	return collection

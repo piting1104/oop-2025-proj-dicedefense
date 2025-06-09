@@ -1,27 +1,22 @@
-[
-	{
-		"color": "red",
+{
+	"dice1": {
 		"basic_atk": 10,
 		"basic_atk_speed": 1
 	},
-	{
-		"color": "blue",
+	"dice2": {
 		"basic_atk": 10,
 		"basic_atk_speed": 1
 	},
-	{
-		"color": "green",
+	"dice3": {
 		"basic_atk": 10,
 		"basic_atk_speed": 1
 	},
-	{
-		"color": "orange",
+	"dice4": {
 		"basic_atk": 10,
 		"basic_atk_speed": 1
 	},
-	{
-		"color": "purple",
+	"dice5": {
 		"basic_atk": 10,
 		"basic_atk_speed": 1
 	}
-]
+}
