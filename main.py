@@ -5,7 +5,7 @@ from src.dice import Dice, CollectionDice, TYPE_COLOR
 from src.enemy import Enemy
 from src.custom_dice import *
 from src import font_manager
-from src.cash import CashManager
+from src.cash import *
 
 import sys, random
 import pygame
@@ -44,6 +44,7 @@ def draw_dice_collection(mouse_pos):
 
 # cash manager initialization
 cash = CashManager(100)
+buying_dice_cash = BuyingDiceCashManager(10)  # cash for buying dice
 
 # dice buying initialization
 dices_on_grid = []
@@ -53,14 +54,16 @@ for i in range(GRID_ROWS):
 		available_grids.append((i, j))
 
 def purchase_dice():
-	if cash.get_cash() < 10:
+	if cash.get_cash() < buying_dice_cash.get_cost():
 		print("Not enough cash to buy a dice!")
 		return
 	if len(available_grids) == 0:
 		print("No available grids for buying!")
 		return
 					
-	cash.spend(10) # cost of buying a dice
+	cash.spend(buying_dice_cash.get_cost()) # cost of buying a dice
+	buying_dice_cash.upgrade(10)  # increase the cost for next purchase
+ 
 	grid = random.choice(available_grids)
 	type = random.choice([i for i in range(5)])
 	dices_on_grid.append(Dice(grid[0], grid[1], type, 1, my_dices[type].basic_atk, my_dices[type].basic_atk_speed))
@@ -125,7 +128,9 @@ while True:
 			cash.gain(10)
 	enemies = list(filter(lambda e: e.hp > 0, enemies))
 
+
 	cash.draw(screen)
+	buying_dice_cash.draw(screen)
  
 	pygame.display.flip()
 	pygame.time.delay(40)
