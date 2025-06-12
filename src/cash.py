@@ -41,3 +41,21 @@ class BuyingDiceCashManager:
     def draw(self, screen):
         buying_dice_cash_text = get_font().render("Cost$: " + str(self.buying_dice_cash), True, Color.BLACK)
         screen.blit(buying_dice_cash_text, (210, 390))
+        
+class UpgradeDiceCashManager:
+    def __init__(self, initial_upgrade_dice_cash = [100, 100, 100, 100, 100]):
+        self.upgrade_dice_cash = [initial_upgrade_dice_cash[i] for i in range(5)]
+
+    def upgrade(self, dice_index, amount):
+        self.upgrade_dice_cash[dice_index] += amount
+
+    def get_cost(self, dice_index):
+        return self.upgrade_dice_cash[dice_index]
+        
+    def reset(self):
+        self.upgrade_dice_cash = [100, 100, 100, 100, 100]
+
+    def draw(self, screen):
+        for i in range(5):
+            upgrade_dice_cash_text = get_font().render(str(self.upgrade_dice_cash[i]), True, Color.BLACK)
+            screen.blit(upgrade_dice_cash_text, (83 + i*76, 470))
