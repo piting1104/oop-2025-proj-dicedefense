@@ -144,7 +144,9 @@ while True:
 
 	cash.draw(screen)
 	buying_dice_cash.draw(screen)
+	upgrade_dice_cash.upgradable_colors_status(cash.get_cash())
 	upgrade_dice_cash.draw(screen)
+
  
 	pygame.display.flip()
 	pygame.time.delay(40)

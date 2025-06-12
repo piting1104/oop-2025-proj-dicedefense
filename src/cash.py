@@ -45,6 +45,7 @@ class BuyingDiceCashManager:
 class UpgradeDiceCashManager:
     def __init__(self, initial_upgrade_dice_cash = [100, 100, 100, 100, 100]):
         self.upgrade_dice_cash = [initial_upgrade_dice_cash[i] for i in range(5)]
+        self.colors = [Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK]
 
     def upgrade(self, dice_index, amount):
         self.upgrade_dice_cash[dice_index] += amount
@@ -54,8 +55,17 @@ class UpgradeDiceCashManager:
         
     def reset(self):
         self.upgrade_dice_cash = [100, 100, 100, 100, 100]
-
+    
+    def upgradable_colors_status(self, cash):
+        for i in range(5):
+            if cash < self.upgrade_dice_cash[i]:
+                self.colors[i] = Color.GRAY
+            else:
+                self.colors[i] = Color.BLACK
+    
     def draw(self, screen):
         for i in range(5):
-            upgrade_dice_cash_text = get_font().render(str(self.upgrade_dice_cash[i]), True, Color.BLACK)
+            upgrade_dice_cash_text = get_font().render(str(self.upgrade_dice_cash[i]), True, self.colors[i])
             screen.blit(upgrade_dice_cash_text, (83 + i*76, 470))
+            
+
