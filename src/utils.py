@@ -3,6 +3,7 @@ from src.constants import *
 
 class Color:
 	WHITE  = (255, 255, 255)
+	YELLOW = (255, 255, 0)
 	BLACK  = (0, 0, 0)
 	GRAY   = (200, 200, 200)
 	DARK_GRAY = (150, 150, 150)
