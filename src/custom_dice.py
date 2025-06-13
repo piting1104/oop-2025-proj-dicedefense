@@ -11,7 +11,7 @@ class CustomDice:
 		self.level += 1
 
 def get_dice_collection() -> list[CustomDice]:
-	js = json.load(open("src/dice_collection.json", "r"))
+	js = json.load(open("src/resources/dice_collection.json", "r"))
 	collection = []
 	for i in range(5):
 		dice_json = js[f"dice{i+1}"]

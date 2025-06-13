@@ -6,6 +6,7 @@ from src.enemy import Enemy
 from src.custom_dice import *
 from src import font_manager
 from src.cash import *
+from src.stage import *
 
 import sys, random
 import pygame
@@ -43,8 +44,8 @@ def draw_dice_collection(mouse_pos):
 		dice_collection.append(dice)
 
 # cash manager initialization
-cash = CashManager(1000)
-buying_dice_cash = BuyingDiceCashManager(10)  # cash for buying dice
+cash = CashManager(400)
+buying_dice_cash = BuyingDiceCashManager(100)  # cash for buying dice
 initial_upgrade_dice_cash = [100, 100, 100, 100, 100]  # initial cash for upgrading dice
 upgrade_dice_cash = UpgradeDiceCashManager(initial_upgrade_dice_cash)	
 
@@ -64,7 +65,7 @@ def purchase_dice():
 		return
 					
 	cash.spend(buying_dice_cash.get_cost()) # cost of buying a dice
-	buying_dice_cash.upgrade(10)  # increase the cost for next purchase
+	buying_dice_cash.upgrade(50)  # increase the cost for next purchase
  
 	grid = random.choice(available_grids)
 	type = random.choice([i for i in range(5)])
@@ -73,7 +74,7 @@ def purchase_dice():
  
 def upgrade_dice(dice_index):
 	if cash.get_cash() < upgrade_dice_cash.get_cost(dice_index):
-		print("Not enough cash to upgrade a dice!")
+		print("Not enough cash to upgrade this dice!")
 		return
 	
 	cash.spend(upgrade_dice_cash.get_cost(dice_index))  # cost of upgrading a dice
@@ -87,9 +88,10 @@ buying_button = CircleButton((WIDTH / 2, 350), 35, "Buy")
 bullet_on_screen = []
 
 # enemy initialization
-enemies = [
-	Enemy(LEFT_DOWN, 2000),
-]
+enemies = []
+
+# stage initialization
+stage = StageManager(stages=get_stages())
 
 while True:
 	mouse_pos = pygame.mouse.get_pos()
@@ -133,20 +135,20 @@ while True:
 	for enemy in enemies:
 		state = enemy.move()
 		enemy.draw(screen)
-	
-	# check if enemies are defeated
-	for enemy in enemies:
+		
+		# check if enemies are defeated
 		if enemy.hp <= 0:
 			cash.gain(10)
-	enemies = list(filter(lambda e: e.hp > 0, enemies))
 
-	# print("Dices Upgrade Costs", upgrade_dice_cash.get_cost(0), " ", upgrade_dice_cash.get_cost(1), " ", upgrade_dice_cash.get_cost(2), " ", upgrade_dice_cash.get_cost(3), " ", upgrade_dice_cash.get_cost(4))
+	enemies = list(filter(lambda e: e.hp > 0, enemies))
 
 	cash.draw(screen)
 	buying_dice_cash.draw(screen)
 	upgrade_dice_cash.upgradable_colors_status(cash.get_cash())
 	upgrade_dice_cash.draw(screen)
 
+	# stage generate enemies
+	stage.periodic_generate_enemies(enemies)
  
 	pygame.display.flip()
 	pygame.time.delay(40)

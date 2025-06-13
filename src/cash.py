@@ -26,7 +26,7 @@ class CashManager:
         screen.blit(cash_text, (80, 340))
         
 class BuyingDiceCashManager:
-    def __init__(self, initial_buying_dice_cash=10):
+    def __init__(self, initial_buying_dice_cash=100):
         self.buying_dice_cash = initial_buying_dice_cash
 
     def upgrade(self, amount):
@@ -36,7 +36,7 @@ class BuyingDiceCashManager:
         return self.buying_dice_cash
         
     def reset(self):
-        self.buying_dice_cash = 10
+        self.buying_dice_cash = 100
 
     def draw(self, screen):
         buying_dice_cash_text = get_font().render("Cost$: " + str(self.buying_dice_cash), True, Color.BLACK)

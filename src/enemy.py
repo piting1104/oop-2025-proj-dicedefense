@@ -6,11 +6,11 @@ from src.constants import *
 from src.font_manager import get_font
 
 class Enemy:
-	def __init__(self, pos: Vector2, hp: int):
+	def __init__(self, pos: Vector2, hp: int, moving_speed=1.5):
 		self.pos = pos.copy()
 		self.hp = hp
 		self.on_path = 0
-		self.moving_speed = 2
+		self.moving_speed = moving_speed
 	
 	def get_rect(self):
 		square = Vector2(ENEMY_SIZE, ENEMY_SIZE)
