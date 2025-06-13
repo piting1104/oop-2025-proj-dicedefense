@@ -5,7 +5,7 @@ from src.dice import Dice, CollectionDice, TYPE_COLOR
 from src.enemy import Enemy
 from src.custom_dice import *
 from src import font_manager
-from src.cash import CashManager
+from src.cash import *
 
 import sys, random
 import pygame
@@ -43,7 +43,10 @@ def draw_dice_collection(mouse_pos):
 		dice_collection.append(dice)
 
 # cash manager initialization
-cash = CashManager(100)
+cash = CashManager(1000)
+buying_dice_cash = BuyingDiceCashManager(10)  # cash for buying dice
+initial_upgrade_dice_cash = [100, 100, 100, 100, 100]  # initial cash for upgrading dice
+upgrade_dice_cash = UpgradeDiceCashManager(initial_upgrade_dice_cash)	
 
 # dice buying initialization
 dices_on_grid = []
@@ -53,18 +56,30 @@ for i in range(GRID_ROWS):
 		available_grids.append((i, j))
 
 def purchase_dice():
-	if cash.get_cash() < 10:
+	if cash.get_cash() < buying_dice_cash.get_cost():
 		print("Not enough cash to buy a dice!")
 		return
 	if len(available_grids) == 0:
 		print("No available grids for buying!")
 		return
 					
-	cash.spend(10) # cost of buying a dice
+	cash.spend(buying_dice_cash.get_cost()) # cost of buying a dice
+	buying_dice_cash.upgrade(10)  # increase the cost for next purchase
+ 
 	grid = random.choice(available_grids)
 	type = random.choice([i for i in range(5)])
 	dices_on_grid.append(Dice(grid[0], grid[1], type, 1, my_dices[type].basic_atk, my_dices[type].basic_atk_speed))
 	available_grids.remove(grid)
+ 
+def upgrade_dice(dice_index):
+	if cash.get_cash() < upgrade_dice_cash.get_cost(dice_index):
+		print("Not enough cash to upgrade a dice!")
+		return
+	
+	cash.spend(upgrade_dice_cash.get_cost(dice_index))  # cost of upgrading a dice
+	upgrade_dice_cash.upgrade(dice_index, 100)  # increase the cost for next upgrade
+	my_dices[dice_index].upgrade()
+    
 
 buying_button = CircleButton((WIDTH / 2, 350), 35, "Buy")
 
@@ -89,7 +104,7 @@ while True:
 				purchase_dice()
 			for idx, d in enumerate(dice_collection):
 				if d.is_mouse_on(mouse_pos):
-					my_dices[idx].upgrade()
+					upgrade_dice(idx)
 
 	
 	screen.fill(Color.WHITE)
@@ -125,7 +140,13 @@ while True:
 			cash.gain(10)
 	enemies = list(filter(lambda e: e.hp > 0, enemies))
 
+	# print("Dices Upgrade Costs", upgrade_dice_cash.get_cost(0), " ", upgrade_dice_cash.get_cost(1), " ", upgrade_dice_cash.get_cost(2), " ", upgrade_dice_cash.get_cost(3), " ", upgrade_dice_cash.get_cost(4))
+
 	cash.draw(screen)
+	buying_dice_cash.draw(screen)
+	upgrade_dice_cash.upgradable_colors_status(cash.get_cash())
+	upgrade_dice_cash.draw(screen)
+
  
 	pygame.display.flip()
 	pygame.time.delay(40)
