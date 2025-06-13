@@ -28,6 +28,7 @@ class CashManager:
 class BuyingDiceCashManager:
     def __init__(self, initial_buying_dice_cash=100):
         self.buying_dice_cash = initial_buying_dice_cash
+        self.color = Color.BLACK
 
     def upgrade(self, amount):
         self.buying_dice_cash += amount
@@ -37,9 +38,15 @@ class BuyingDiceCashManager:
         
     def reset(self):
         self.buying_dice_cash = 100
+   
+    def upgradable_colors_status(self, cash):
+        if cash < self.buying_dice_cash:
+            self.color = Color.GRAY
+        else:
+            self.color = Color.BLACK        
 
     def draw(self, screen):
-        buying_dice_cash_text = get_font().render("Cost$: " + str(self.buying_dice_cash), True, Color.BLACK)
+        buying_dice_cash_text = get_font().render("Cost$: " + str(self.buying_dice_cash), True, self.color)
         screen.blit(buying_dice_cash_text, (210, 390))
         
 class UpgradeDiceCashManager:

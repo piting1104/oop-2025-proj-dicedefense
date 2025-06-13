@@ -158,18 +158,33 @@ import pygame
 from src.constants import *
 from src import font_manager
 from src.game import Game
-# from src.scene import menu, game_over
+from src.scene import Scene
 
 def main():
-    pygame.init()
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Dice Defense")
-    font_manager.init_font()
-
-    game = Game(screen)
-    while True:
-        game.run()
-
-
+	pygame.init()
+	screen = pygame.display.set_mode((WIDTH, HEIGHT))
+	pygame.display.set_caption("Dice Defense")
+	font_manager.init_font()
+	
+	state = "menu"
+	highest_level = 100
+	game = Game(screen)
+	scene = Scene(screen)
+ 
+	while True:
+		if state == "menu":
+			if scene.menu(highest_level):
+				state = "gaming"
+		
+		elif state == "gaming":
+			if not game.run():
+				state = "game_over"
+		
+		elif state == "game_over":
+			scene.game_over()
+			state = "menu"
+			pygame.time.delay(3000)
+			game.reset()
+	
 if __name__ == "__main__":
     main()

@@ -17,7 +17,33 @@ class Game:
         self.my_dices = get_dice_collection()
         self.dice_collection = []
 
-        self.cash = CashManager(400)
+        self.cash = CashManager(1000)
+        self.buying_dice_cash = BuyingDiceCashManager(100)
+        initial_upgrade_dice_cash = [100, 100, 100, 100, 100]  # initial cash for upgrading dice
+        self.upgrade_dice_cash = UpgradeDiceCashManager(initial_upgrade_dice_cash)	
+
+        self.dices_on_grid = []
+        self.available_grids = []
+        for i in range(GRID_ROWS):
+            for j in range(GRID_COLS):
+                self.available_grids.append((i, j))
+
+        self.buying_button = CircleButton((WIDTH / 2, 350), 35, "Buy")
+
+        # bullet initialization
+        self.bullet_on_screen = []
+
+        # enemy initialization
+        self.enemies = []
+
+        # stage initialization
+        self.stage = StageManager(stages=get_stages())
+        
+    def reset(self):
+        self.my_dices = get_dice_collection()
+        self.dice_collection = []
+
+        self.cash = CashManager(1000)
         self.buying_dice_cash = BuyingDiceCashManager(100)
         initial_upgrade_dice_cash = [100, 100, 100, 100, 100]  # initial cash for upgrading dice
         self.upgrade_dice_cash = UpgradeDiceCashManager(initial_upgrade_dice_cash)	
@@ -85,6 +111,10 @@ class Game:
         self.cash.spend(self.upgrade_dice_cash.get_cost(dice_index))  # cost of upgrading a dice
         self.upgrade_dice_cash.upgrade(dice_index, 100)  # increase the cost for next upgrade
         self.my_dices[dice_index].upgrade()
+        
+    def get_stage(self):
+        return self.stage.current_stage
+
 
     def run(self):
         mouse_pos = pygame.mouse.get_pos()
@@ -129,6 +159,9 @@ class Game:
             state = enemy.move()
             enemy.draw(self.screen)
             
+            if state == 0:  # enemy reached the end
+                return False  # game over
+            
             # check if enemies are defeated
             if enemy.hp <= 0:
                 self.cash.gain(10)
@@ -136,6 +169,7 @@ class Game:
         self.enemies = list(filter(lambda e: e.hp > 0, self.enemies))
 
         self.cash.draw(self.screen)
+        self.buying_dice_cash.upgradable_colors_status(self.cash.get_cash())
         self.buying_dice_cash.draw(self.screen)
         self.upgrade_dice_cash.upgradable_colors_status(self.cash.get_cash())
         self.upgrade_dice_cash.draw(self.screen)
@@ -145,3 +179,6 @@ class Game:
     
         pygame.display.flip()
         pygame.time.delay(40)
+        
+        return True  # continue the game
+        
