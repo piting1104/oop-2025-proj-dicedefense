@@ -52,5 +52,6 @@ class Enemy:
 		
 		return 1
 	
-	def damage(self, damage):
-		self.hp -= int(damage)
+	def damage_by(self, bullet):
+		if bullet.show:
+			self.hp -= int(bullet.atk)

@@ -212,8 +212,8 @@ class Game:
         for bullet in self.bullet_on_screen:
             for enemy in self.enemies:
                 if enemy.get_rect().collidepoint(bullet.pos):
-                    enemy.damage(bullet.atk)
-                    bullet.show == False
+                    enemy.damage_by(bullet)
+                    bullet.show = False
                     break
             bullet.move()
             bullet.draw(self.screen)
