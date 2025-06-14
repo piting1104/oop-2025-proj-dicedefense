@@ -55,3 +55,6 @@ class Enemy:
 	def damage_by(self, bullet):
 		if bullet.show:
 			self.hp -= int(bullet.atk)
+	
+	def money(self):
+		return 10

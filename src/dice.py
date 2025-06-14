@@ -22,6 +22,8 @@ dice_dots_pos = [
 
 class Dice:
 	def __init__(self, i, j, type, points: int, basic_atk, basic_atk_speed):
+		self.i = i
+		self.j = j
 		self.origin = Vector2(GRID_POS + j * (CELL_SIZE + GAP) + CELL_SIZE / 2, GRID_POS + i * (CELL_SIZE + GAP) + CELL_SIZE / 2)
 		self.rect = pygame.Rect(GRID_POS + j * (CELL_SIZE + GAP), GRID_POS + i * (CELL_SIZE + GAP), CELL_SIZE, CELL_SIZE)
 		self.type = type
