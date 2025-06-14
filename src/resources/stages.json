@@ -12,5 +12,80 @@
 			]
 		],
 		"boss": { "hp": 1500 }
+	},
+
+	{
+		"level_id": 2,
+		"waves": [
+			[
+				{ "hp": 200, "amount": 10 },
+				{ "hp": 400, "amount": 3 }
+			],
+			[
+				{ "hp": 300, "amount": 10 },
+				{ "hp": 500, "amount": 3 }
+			]
+		],
+		"boss": { "hp": 2000 }
+	},
+
+	{
+		"level_id": 3,
+		"waves": [
+			[
+				{ "hp": 400, "amount": 10 },
+				{ "hp": 800, "amount": 3 }
+			],
+			[
+				{ "hp": 600, "amount": 10 },
+				{ "hp": 1000, "amount": 3 }
+			]
+		],
+		"boss": { "hp": 2500 }
+	},
+
+	{
+		"level_id": 4,
+		"waves": [
+			[
+				{ "hp": 800, "amount": 10 },
+				{ "hp": 1600, "amount": 3 }
+			],
+			[
+				{ "hp": 1200, "amount": 10 },
+				{ "hp": 2000, "amount": 3 }
+			]
+		],
+		"boss": { "hp": 3000 }
+	},
+
+	{
+		"level_id": 5,
+		"waves": [
+			[
+				{ "hp": 1600, "amount": 10 },
+				{ "hp": 3200, "amount": 3 }
+			],
+			[
+				{ "hp": 2400, "amount": 10 },
+				{ "hp": 4000, "amount": 3 }
+			]
+		],
+		"boss": { "hp": 3500 }
+	},
+
+	{
+		"level_id": 6,
+		"waves": [
+			[
+				{ "hp": 3200, "amount": 10 },
+				{ "hp": 6400, "amount": 3 }
+			],
+			[
+				{ "hp": 4800, "amount": 10 },
+				{ "hp": 8000, "amount": 3 }
+			]
+		],
+		"boss": { "hp": 4000 }
 	}
 ]

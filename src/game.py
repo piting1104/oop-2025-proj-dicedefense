@@ -38,6 +38,9 @@ class Game:
 
         # stage initialization
         self.stage = StageManager(stages=get_stages())
+
+        # selected dice initialization
+        self.selected_dice = None  
         
     def reset(self):
         self.my_dices = get_dice_collection()
@@ -112,9 +115,27 @@ class Game:
         self.upgrade_dice_cash.upgrade(dice_index, 100)  # increase the cost for next upgrade
         self.my_dices[dice_index].upgrade()
         
-    def get_stage(self):
-        return self.stage.current_stage
+    def can_merge(self, d1, d2):
+        return d1 is not d2 and d1.type == d2.type and d1.points == d2.points
 
+    def merge_dices(self, d1, d2):
+        # 保留 d1 的位置，移除 d1 和 d2
+        self.dices_on_grid.remove(d1)
+        self.dices_on_grid.remove(d2)
+        self.available_grids.append((d1.rect.top // (CELL_SIZE + GAP), d1.rect.left // (CELL_SIZE + GAP)))
+        self.available_grids.append((d2.rect.top // (CELL_SIZE + GAP), d2.rect.left // (CELL_SIZE + GAP)))
+
+        # 加入新骰子（合併升一級）
+        new_points = d1.points + 1
+        i = (d1.rect.top - GRID_POS) // (CELL_SIZE + GAP)
+        j = (d1.rect.left - GRID_POS) // (CELL_SIZE + GAP)
+        self.dices_on_grid.append(Dice(i, j, d1.type, new_points, d1.basic_atk, d1.basic_atk_speed))
+
+        # 只保留合併後骰子的位置為佔用
+        self.available_grids.remove((i, j))
+
+    def get_stage(self):
+        return self.stage.current_stage + 1
 
     def run(self):
         mouse_pos = pygame.mouse.get_pos()
@@ -130,7 +151,47 @@ class Game:
                 for idx, d in enumerate(self.dice_collection):
                     if d.is_mouse_on(mouse_pos):
                         self.upgrade_dice(idx)
+                
+                clicked_dice = None
+                for dice in self.dices_on_grid:
+                    if dice.rect.collidepoint(mouse_pos):
+                        clicked_dice = dice
+                        break
+                
+                if clicked_dice:
+                    if self.selected_dice is None:
+                        self.selected_dice = clicked_dice
+                    elif self.selected_dice == clicked_dice:
+                        self.selected_dice = None  # Cancel selection
+                    elif (self.selected_dice.type == clicked_dice.type and 
+                        self.selected_dice.points == clicked_dice.points):
+                        
+                        if self.selected_dice.points >= MAX_POINTS:
+                            print("已達最大合成等級，無法再合成")
+                            self.selected_dice = None
+                            return "game_continue"  # Cancel merge if max points reached
+                        
+                        # Merge the two dices
+                        new_points = self.selected_dice.points + 1
+                        row = (clicked_dice.rect.top - GRID_POS) // (CELL_SIZE + GAP)
+                        col = (clicked_dice.rect.left - GRID_POS) // (CELL_SIZE + GAP)
+                        new_dice = Dice(row, col, clicked_dice.type, new_points,
+                                        clicked_dice.basic_atk, clicked_dice.basic_atk_speed)
 
+                        self.dices_on_grid.remove(self.selected_dice)
+                        self.dices_on_grid.remove(clicked_dice)
+                        self.dices_on_grid.append(new_dice)
+
+                        # Add the grids of the merged dices back to available grids
+                        i = (self.selected_dice.rect.top - GRID_POS) // (CELL_SIZE + GAP)
+                        j = (self.selected_dice.rect.left - GRID_POS) // (CELL_SIZE + GAP)
+                        if (i, j) not in self.available_grids:
+                            self.available_grids.append((i, j))
+                        
+                        self.available_grids = list(filter(lambda pos: 0 <= pos[0] < GRID_ROWS and 0 <= pos[1] < GRID_COLS, self.available_grids))
+                        self.selected_dice = None
+                    else:
+                        self.selected_dice = None  # Cancel selection if different dice are clicked
         
         self.screen.fill(Color.WHITE)
         self.draw_grid()
@@ -143,6 +204,10 @@ class Game:
         for dice in self.dices_on_grid:
             dice.periodic_attack(self.bullet_on_screen, self.enemies, levels)
             dice.draw(self.screen)
+            
+            # 如果這顆是被選到的骰子，就畫黃色邊框
+            if self.selected_dice == dice:
+                pygame.draw.rect(self.screen, Color.YELLOW, dice.rect, 3, 5)
         
         for bullet in self.bullet_on_screen:
             for enemy in self.enemies:
@@ -160,7 +225,7 @@ class Game:
             enemy.draw(self.screen)
             
             if state == 0:  # enemy reached the end
-                return False  # game over
+                return "game_over"  # game over
             
             # check if enemies are defeated
             if enemy.hp <= 0:
@@ -173,12 +238,15 @@ class Game:
         self.buying_dice_cash.draw(self.screen)
         self.upgrade_dice_cash.upgradable_colors_status(self.cash.get_cash())
         self.upgrade_dice_cash.draw(self.screen)
+        stages_text = get_font().render("Stage: " + str(self.stage.current_stage + 1) , True, Color.BLUE)
+        self.screen.blit(stages_text, (WIDTH/2 - 40, 10))
 
         # stage generate enemies
-        self.stage.periodic_generate_enemies(self.enemies)
+        if(self.stage.periodic_generate_enemies(self.enemies) == "stage_clear"):
+            return "stage_clear"
     
         pygame.display.flip()
         pygame.time.delay(40)
         
-        return True  # continue the game
+        return "game_continue"  # continue the game
         

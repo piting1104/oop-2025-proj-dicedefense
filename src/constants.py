@@ -19,3 +19,6 @@ LEFT_TOP = Vector2(DIST, DIST)
 RIGHT_TOP = Vector2(WIDTH - DIST, DIST)
 LEFT_DOWN = Vector2(DIST, DIST * 2 + CELL_SIZE * 4)
 RIGHT_DOWN = Vector2(WIDTH - DIST, DIST * 2 + CELL_SIZE * 4)
+
+# max point
+MAX_POINTS = 6
