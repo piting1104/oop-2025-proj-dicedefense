@@ -54,10 +54,14 @@ class StageManager:
 	def next_stage(self):
 		if self.current_stage == len(self.stages) - 1:
 			print("All stages clear!")
-			return
-		
+			return "stage_clear"
+
 		self.current_stage += 1
 		self.current_wave = 0
+		self.enemy_queue = Queue()
+		add_enemies_to_queue(self.stages[self.current_stage].waves[0], self.enemy_queue)
+		self.reset_clock()
+		self.is_boss_wave = False
 	
 	def next_wave(self):
 		if self.current_wave == len(self.stages[self.current_stage].waves) - 1:
@@ -82,7 +86,8 @@ class StageManager:
 		
 		if self.enemy_queue.empty() and len(enemies) == 0:
 			if self.is_boss_wave:
-				self.next_stage()
+				if self.next_stage() == "stage_clear":
+					return "stage_clear"
 			else:
 				self.next_wave()
 		

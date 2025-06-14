@@ -167,23 +167,35 @@ def main():
 	font_manager.init_font()
 	
 	state = "menu"
-	highest_level = 100
+	highest_stage = 0
 	game = Game(screen)
 	scene = Scene(screen)
  
 	while True:
 		if state == "menu":
-			if scene.menu(highest_level):
+			if scene.menu(highest_stage):
 				state = "gaming"
 		
 		elif state == "gaming":
-			if not game.run():
+			if game.run() == "game_over":
 				state = "game_over"
+				if(highest_stage < game.get_stage() - 1):
+					highest_stage = game.get_stage() - 1
+     
+			elif game.run() == "stage_clear":  
+				state = "stage_clear"
 		
 		elif state == "game_over":
 			scene.game_over()
 			state = "menu"
 			pygame.time.delay(3000)
+			game.reset()
+   
+		elif state == "stage_clear":
+			scene.stage_clear()
+			state = "menu"
+			highest_stage = game.get_stage()
+			pygame.time.delay(4000)
 			game.reset()
 	
 if __name__ == "__main__":

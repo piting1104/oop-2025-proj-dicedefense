@@ -33,7 +33,7 @@ class Scene:
         self.screen.blit(background, (0, 250))
         menu_text = get_font().render("Dice Defense" , True, Color.BLACK)
         self.screen.blit(menu_text, (WIDTH/2 - 50, HEIGHT/4))
-        highest_level_text = get_font().render("Highest Level: " + str(best_level), True, Color.GREEN)
+        highest_level_text = get_font().render("Highest Stage: " + str(best_level), True, Color.GREEN)
         self.screen.blit(highest_level_text, (WIDTH/2 - 60, HEIGHT/2 + 40))
         self.start_button.draw(self.screen, mouse_pos)
         
@@ -46,3 +46,12 @@ class Scene:
         
         pygame.display.flip()
         pygame.time.delay(40)
+        
+    def stage_clear(self):
+        self.screen.fill(Color.WHITE)
+        gameover_text = get_font().render("Stage Clear" , True, Color.GREEN)
+        self.screen.blit(gameover_text, (WIDTH/2 - 40, HEIGHT/3))
+        
+        pygame.display.flip()
+        pygame.time.delay(40)
+

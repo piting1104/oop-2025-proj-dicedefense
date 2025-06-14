@@ -113,7 +113,7 @@ class Game:
         self.my_dices[dice_index].upgrade()
         
     def get_stage(self):
-        return self.stage.current_stage
+        return self.stage.current_stage + 1
 
 
     def run(self):
@@ -160,7 +160,7 @@ class Game:
             enemy.draw(self.screen)
             
             if state == 0:  # enemy reached the end
-                return False  # game over
+                return "game_over"  # game over
             
             # check if enemies are defeated
             if enemy.hp <= 0:
@@ -173,12 +173,15 @@ class Game:
         self.buying_dice_cash.draw(self.screen)
         self.upgrade_dice_cash.upgradable_colors_status(self.cash.get_cash())
         self.upgrade_dice_cash.draw(self.screen)
+        stages_text = get_font().render("Stage: " + str(self.stage.current_stage + 1) , True, Color.BLUE)
+        self.screen.blit(stages_text, (WIDTH/2 - 40, 10))
 
         # stage generate enemies
-        self.stage.periodic_generate_enemies(self.enemies)
+        if(self.stage.periodic_generate_enemies(self.enemies) == "stage_clear"):
+            return "stage_clear"
     
         pygame.display.flip()
         pygame.time.delay(40)
         
-        return True  # continue the game
+        return "game_continue"  # continue the game
         
