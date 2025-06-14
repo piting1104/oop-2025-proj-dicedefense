@@ -4,7 +4,7 @@ from src.constants import *
 from src.dice import Dice, CollectionDice, TYPE_COLOR
 from src.enemy import Enemy
 from src.custom_dice import *
-from src import font_manager
+from src.font_manager import *
 from src.cash import *
 from src.stage import *
 
@@ -28,7 +28,7 @@ class Game:
             for j in range(GRID_COLS):
                 self.available_grids.append((i, j))
 
-        self.buying_button = CircleButton((WIDTH / 2, 350), 35, "Buy")
+        self.buying_button = CircleButton((WIDTH / 2, 365), 35, "Buy")
 
         # bullet initialization
         self.bullet_on_screen = []
@@ -57,7 +57,7 @@ class Game:
             for j in range(GRID_COLS):
                 self.available_grids.append((i, j))
 
-        self.buying_button = CircleButton((WIDTH / 2, 350), 35, "Buy")
+        self.buying_button = CircleButton((WIDTH / 2, 380), 35, "Buy")
 
         # bullet initialization
         self.bullet_on_screen = []
@@ -69,11 +69,11 @@ class Game:
         self.stage = StageManager(stages=get_stages())
 
     def draw_grid(self):
-        outside_rect = pygame.Rect(GRID_POS - MARGIN, GRID_POS - MARGIN, CELL_SIZE * GRID_COLS + GAP * (GRID_COLS - 1) + MARGIN * 2, CELL_SIZE * GRID_ROWS + GAP * (GRID_ROWS - 1) + MARGIN * 2)
+        outside_rect = pygame.Rect(GRID_POS - MARGIN, TOP_PADDING + GRID_POS - MARGIN, CELL_SIZE * GRID_COLS + GAP * (GRID_COLS - 1) + MARGIN * 2, CELL_SIZE * GRID_ROWS + GAP * (GRID_ROWS - 1) + MARGIN * 2)
         pygame.draw.rect(self.screen, Color.GRAY, outside_rect, 2, 5)
         for row in range(GRID_ROWS):
             for col in range(GRID_COLS):
-                rect = pygame.Rect(GRID_POS + col * (CELL_SIZE + GAP), GRID_POS + row * (CELL_SIZE + GAP), CELL_SIZE, CELL_SIZE)
+                rect = pygame.Rect(GRID_POS + col * (CELL_SIZE + GAP), TOP_PADDING + GRID_POS + row * (CELL_SIZE + GAP), CELL_SIZE, CELL_SIZE)
                 pygame.draw.rect(self.screen, lighten(Color.GRAY, 0.4), rect, 0, 5)
 
     def draw_moving_line(self):
@@ -83,10 +83,10 @@ class Game:
 
     def draw_dice_collection(self, mouse_pos):
         self.dice_collection.clear()
-        rect = pygame.Rect(50, 420, 400, 80)
+        rect = pygame.Rect(50, 440, 400, 80)
         pygame.draw.rect(self.screen, lighten(Color.GRAY, 0.3), rect, 0, 5)
         for i, d in enumerate(self.my_dices):
-            dice = CollectionDice(250 + (i - 2) * 76, 460, 60, TYPE_COLOR[i], d.level)
+            dice = CollectionDice(250 + (i - 2) * 76, 480, 60, TYPE_COLOR[i], d.level)
             dice.draw(self.screen, mouse_pos)
             self.dice_collection.append(dice)
 
@@ -167,7 +167,7 @@ class Game:
         self.draw_moving_line()
         self.draw_dice_collection(mouse_pos)
 
-        self.buying_button.draw(self.screen, mouse_pos)
+        self.buying_button.draw(self.screen, mouse_pos, get_font())
 
         levels = list(map(lambda d: d.level, self.dice_collection))
         for dice in self.dices_on_grid:
@@ -207,8 +207,14 @@ class Game:
         self.buying_dice_cash.draw(self.screen)
         self.upgrade_dice_cash.upgradable_colors_status(self.cash.get_cash())
         self.upgrade_dice_cash.draw(self.screen)
-        stages_text = get_font().render("Stage: " + str(self.stage.current_stage + 1) , True, Color.BLUE)
-        self.screen.blit(stages_text, (WIDTH/2 - 40, 10))
+        
+        s = f"Stage {self.stage.current_stage + 1}"
+        if self.stage.is_boss_wave:
+            s += " - Boss!"
+        else:
+            s += f" - wave {self.stage.current_wave + 1}"
+        stages_text = get_font(type="h2").render(s, True, Color.BLUE)
+        self.screen.blit(stages_text, (WIDTH/2 - stages_text.get_width() / 2, 10))
 
         # stage generate enemies
         if(self.stage.periodic_generate_enemies(self.enemies) == "stage_clear"):

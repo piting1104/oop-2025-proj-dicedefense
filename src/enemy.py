@@ -31,7 +31,7 @@ class Enemy:
 	
 	def move(self):
 		if self.on_path == 0:
-			if self.pos.y <= DIST:
+			if self.pos.y <= LEFT_TOP.y:
 				self.on_path = 1
 				self.pos.x += self.moving_speed
 			else:

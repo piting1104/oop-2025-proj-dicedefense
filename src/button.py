@@ -14,11 +14,11 @@ class CircleButton:
 		distance = math.hypot(dx, dy)
 		return distance <= self.radius
 	
-	def draw(self, surface, mouse_pos):
+	def draw(self, surface, mouse_pos, font):
 		color = darken(Color.GRAY, 0.1) if self.is_mouse_on(mouse_pos) else Color.GRAY
 		pygame.draw.circle(surface, color, self.center, self.radius)
 		pygame.draw.circle(surface, Color.BLACK, self.center, self.radius, 2)
-		text_surf = get_font().render(self.text, True, Color.BLACK)
+		text_surf = font.render(self.text, True, Color.BLACK)
 		text_rect = text_surf.get_rect(center=self.center)
 		surface.blit(text_surf, text_rect)
 
