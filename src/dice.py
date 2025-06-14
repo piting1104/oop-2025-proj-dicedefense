@@ -44,7 +44,9 @@ class Dice:
 		return enemies[0]
 	
 	def get_atk(self, levels: list[int]):
-		return self.basic_atk * (1 + levels[self.type] * 0.2)
+		# Calculate the attack power based on the dice type and points
+		point_bonus = 1 + 0.2 * (self.points - 1)
+		return self.basic_atk * (1 + levels[self.type] * 0.2) * point_bonus
 	
 	def get_atk_speed(self, levels: list[int]):
 		return self.basic_atk_speed * (1 + levels[self.type] * 0.05)

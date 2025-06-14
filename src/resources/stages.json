@@ -57,5 +57,35 @@
 			]
 		],
 		"boss": { "hp": 3000 }
+	},
+
+	{
+		"level_id": 5,
+		"waves": [
+			[
+				{ "hp": 1600, "amount": 10 },
+				{ "hp": 3200, "amount": 3 }
+			],
+			[
+				{ "hp": 2400, "amount": 10 },
+				{ "hp": 4000, "amount": 3 }
+			]
+		],
+		"boss": { "hp": 3500 }
+	},
+
+	{
+		"level_id": 6,
+		"waves": [
+			[
+				{ "hp": 3200, "amount": 10 },
+				{ "hp": 6400, "amount": 3 }
+			],
+			[
+				{ "hp": 4800, "amount": 10 },
+				{ "hp": 8000, "amount": 3 }
+			]
+		],
+		"boss": { "hp": 4000 }
 	}
 ]
