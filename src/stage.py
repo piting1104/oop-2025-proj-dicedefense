@@ -1,7 +1,7 @@
 import json
 from collections import namedtuple
 from queue import Queue
-from src.enemy import Enemy
+from src.enemy import Enemy, Boss
 from src.utils import LEFT_DOWN
 
 EnemySet = namedtuple("EnemySet", ["hp", "amount"])
@@ -33,7 +33,7 @@ def add_enemies_to_queue(wave: Wave, q: Queue):
 			q.put(es.hp)
 
 def add_boss_to_queue(boss: StageBoss, q: Queue):
-	q.put(boss.hp)
+	q.put(boss)
 
 class StageManager:
 	def __init__(self, stages: list[Stage]):
@@ -82,7 +82,11 @@ class StageManager:
 	
 	def periodic_generate_enemies(self, enemies):
 		if not self.enemy_queue.empty() and self.clock % 20 == 0:
-			enemies.append(Enemy(LEFT_DOWN, self.enemy_queue.get()))
+			e = self.enemy_queue.get()
+			if type(e) == int:
+				enemies.append(Enemy(LEFT_DOWN, e))
+			elif type(e) == StageBoss:
+				enemies.append(Boss(LEFT_DOWN, e.hp))
 		
 		if self.enemy_queue.empty() and len(enemies) == 0:
 			if self.is_boss_wave:

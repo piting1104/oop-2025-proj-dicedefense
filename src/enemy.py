@@ -7,14 +7,15 @@ from src.font_manager import get_font
 from src.game_parameters import *
 
 class Enemy:
-	def __init__(self, pos: Vector2, hp: int, moving_speed=1.5):
+	def __init__(self, pos: Vector2, hp: int, moving_speed=1.5, resize=1):
 		self.pos = pos.copy()
 		self.hp = hp
 		self.on_path = 0
 		self.moving_speed = moving_speed
+		self.resize = resize
 	
 	def get_rect(self):
-		square = Vector2(ENEMY_SIZE, ENEMY_SIZE)
+		square = Vector2(ENEMY_SIZE, ENEMY_SIZE) * self.resize
 		return pygame.Rect(self.pos - square / 2, square)
 
 	def draw(self, screen):
@@ -59,3 +60,7 @@ class Enemy:
 	
 	def money(self):
 		return enemy_gain(self.hp)
+
+class Boss(Enemy):
+	def __init__(self, pos: Vector2, hp: int):
+		super().__init__(pos, hp, moving_speed=1.3, resize=1.2)
