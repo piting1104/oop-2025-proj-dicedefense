@@ -5,6 +5,7 @@ from src.utils import *
 from src.font_manager import get_font
 from src.bullet import Bullet
 from src.enemy import Enemy
+from src.game_parameters import *
 
 # dice type
 TYPE_COLOR = [Color.RED, Color.BLUE, Color.ORANGE, Color.GREEN, Color.PURPLE]
@@ -46,12 +47,10 @@ class Dice:
 		return enemies[0]
 	
 	def get_atk(self, levels: list[int]):
-		# Calculate the attack power based on the dice type and points
-		point_bonus = 1 + 0.2 * (self.points - 1)
-		return self.basic_atk * (1 + levels[self.type] * 0.2) * point_bonus
+		return self.basic_atk * dice_bullet_atk_multiplier(levels[self.type], self.points)
 	
 	def get_atk_speed(self, levels: list[int]):
-		return self.basic_atk_speed * (1 + levels[self.type] * 0.05)
+		return self.basic_atk_speed * dice_atk_speed_multiplier(levels[self.type], self.points)
 	
 	def periodic_attack(self, bullet_on_screen: list[Bullet], enemies: list[Enemy], levels: list[int]):
 		if len(enemies) == 0:

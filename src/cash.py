@@ -3,7 +3,7 @@ from src.font_manager import get_font
 
 
 class CashManager:
-    def __init__(self, initial_cash=100):
+    def __init__(self, initial_cash):
         self.cash = initial_cash
 
     def gain(self, amount):
@@ -17,16 +17,13 @@ class CashManager:
 
     def get_cash(self):
         return self.cash
-        
-    def reset(self):
-        self.cash = self.initial_cash
 
     def draw(self, screen):
         cash_text = get_font(type="h2").render("$: " + str(self.cash), True, Color.BLACK)
         screen.blit(cash_text, (60, 360))
         
 class BuyingDiceCashManager:
-    def __init__(self, initial_buying_dice_cash=100):
+    def __init__(self, initial_buying_dice_cash):
         self.buying_dice_cash = initial_buying_dice_cash
         self.color = Color.BLACK
 
@@ -35,11 +32,8 @@ class BuyingDiceCashManager:
 
     def get_cost(self):
         return self.buying_dice_cash
-        
-    def reset(self):
-        self.buying_dice_cash = 100
    
-    def upgradable_colors_status(self, cash):
+    def update_upgradable_colors_status(self, cash):
         if cash < self.buying_dice_cash:
             self.color = Color.GRAY
         else:
@@ -50,20 +44,17 @@ class BuyingDiceCashManager:
         screen.blit(buying_dice_cash_text, (210, 405))
         
 class UpgradeDiceCashManager:
-    def __init__(self, initial_upgrade_dice_cash = [100, 100, 100, 100, 100]):
+    def __init__(self, initial_upgrade_dice_cash):
         self.upgrade_dice_cash = [initial_upgrade_dice_cash[i] for i in range(5)]
-        self.colors = [Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK]
+        self.colors = [Color.BLACK] * 5
 
-    def upgrade(self, dice_index, amount):
+    def increase(self, dice_index, amount):
         self.upgrade_dice_cash[dice_index] += amount
 
     def get_cost(self, dice_index):
         return self.upgrade_dice_cash[dice_index]
-        
-    def reset(self):
-        self.upgrade_dice_cash = [100, 100, 100, 100, 100]
     
-    def upgradable_colors_status(self, cash):
+    def update_upgradable_colors_status(self, cash):
         for i in range(5):
             if cash < self.upgrade_dice_cash[i]:
                 self.colors[i] = Color.GRAY

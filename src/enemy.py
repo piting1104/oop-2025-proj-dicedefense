@@ -4,6 +4,7 @@ from src.constants import *
 from src.utils import *
 from src.constants import *
 from src.font_manager import get_font
+from src.game_parameters import *
 
 class Enemy:
 	def __init__(self, pos: Vector2, hp: int, moving_speed=1.5):
@@ -57,4 +58,4 @@ class Enemy:
 			self.hp -= int(bullet.atk)
 	
 	def money(self):
-		return 10
+		return enemy_gain(self.hp)

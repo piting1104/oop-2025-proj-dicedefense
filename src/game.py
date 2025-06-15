@@ -7,6 +7,7 @@ from src.custom_dice import *
 from src.font_manager import *
 from src.cash import *
 from src.stage import *
+from src.game_parameters import *
 
 import sys, random
 import pygame
@@ -17,10 +18,9 @@ class Game:
         self.my_dices = get_dice_collection()
         self.dice_collection = []
 
-        self.cash = CashManager(1000)
-        self.buying_dice_cash = BuyingDiceCashManager(100)
-        initial_upgrade_dice_cash = [100, 100, 100, 100, 100]  # initial cash for upgrading dice
-        self.upgrade_dice_cash = UpgradeDiceCashManager(initial_upgrade_dice_cash)	
+        self.cash = CashManager(INITIAL_CASH)
+        self.buying_dice_cash = BuyingDiceCashManager(INITIAL_DICE_COST)
+        self.upgrade_dice_cash = UpgradeDiceCashManager(INITIAL_UPGRADE_COST_LIST)	
 
         self.dices_on_grid = []
         self.available_grids = []
@@ -46,10 +46,9 @@ class Game:
         self.my_dices = get_dice_collection()
         self.dice_collection = []
 
-        self.cash = CashManager(1000)
-        self.buying_dice_cash = BuyingDiceCashManager(100)
-        initial_upgrade_dice_cash = [100, 100, 100, 100, 100]  # initial cash for upgrading dice
-        self.upgrade_dice_cash = UpgradeDiceCashManager(initial_upgrade_dice_cash)	
+        self.cash = CashManager(INITIAL_CASH)
+        self.buying_dice_cash = BuyingDiceCashManager(INITIAL_DICE_COST)
+        self.upgrade_dice_cash = UpgradeDiceCashManager(INITIAL_UPGRADE_COST_LIST)	
 
         self.dices_on_grid = []
         self.available_grids = []
@@ -112,7 +111,7 @@ class Game:
             return
         
         self.cash.spend(self.upgrade_dice_cash.get_cost(dice_index))  # cost of upgrading a dice
-        self.upgrade_dice_cash.upgrade(dice_index, 100)  # increase the cost for next upgrade
+        self.upgrade_dice_cash.increase(dice_index, 100)  # increase the cost for next upgrade
         self.my_dices[dice_index].upgrade()
         
     def can_merge(self, d1, d2):
@@ -203,9 +202,9 @@ class Game:
         self.enemies = list(filter(lambda e: e.hp > 0, self.enemies))
 
         self.cash.draw(self.screen)
-        self.buying_dice_cash.upgradable_colors_status(self.cash.get_cash())
+        self.buying_dice_cash.update_upgradable_colors_status(self.cash.get_cash())
         self.buying_dice_cash.draw(self.screen)
-        self.upgrade_dice_cash.upgradable_colors_status(self.cash.get_cash())
+        self.upgrade_dice_cash.update_upgradable_colors_status(self.cash.get_cash())
         self.upgrade_dice_cash.draw(self.screen)
         
         s = f"Stage {self.stage.current_stage + 1}"
@@ -217,7 +216,7 @@ class Game:
         self.screen.blit(stages_text, (WIDTH/2 - stages_text.get_width() / 2, 10))
 
         # stage generate enemies
-        if(self.stage.periodic_generate_enemies(self.enemies) == "stage_clear"):
+        if self.stage.periodic_generate_enemies(self.enemies) == "stage_clear":
             return "stage_clear"
     
         pygame.display.flip()
