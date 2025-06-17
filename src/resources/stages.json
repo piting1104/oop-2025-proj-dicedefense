@@ -1,91 +1,73 @@
 [
-	{
-		"level_id": 1,
-		"waves": [
-			[
-				{ "hp": 100, "amount": 5 },
-				{ "hp": 200, "amount": 3 }
-			],
-			[
-				{ "hp": 150, "amount": 5 },
-				{ "hp": 250, "amount": 3 }
-			]
-		],
-		"boss": { "hp": 1500 }
-	},
-
-	{
-		"level_id": 2,
-		"waves": [
-			[
-				{ "hp": 200, "amount": 10 },
-				{ "hp": 400, "amount": 3 }
-			],
-			[
-				{ "hp": 300, "amount": 10 },
-				{ "hp": 500, "amount": 3 }
-			]
-		],
-		"boss": { "hp": 2000 }
-	},
-
-	{
-		"level_id": 3,
-		"waves": [
-			[
-				{ "hp": 400, "amount": 10 },
-				{ "hp": 800, "amount": 3 }
-			],
-			[
-				{ "hp": 600, "amount": 10 },
-				{ "hp": 1000, "amount": 3 }
-			]
-		],
-		"boss": { "hp": 2500 }
-	},
-
-	{
-		"level_id": 4,
-		"waves": [
-			[
-				{ "hp": 800, "amount": 10 },
-				{ "hp": 1600, "amount": 3 }
-			],
-			[
-				{ "hp": 1200, "amount": 10 },
-				{ "hp": 2000, "amount": 3 }
-			]
-		],
-		"boss": { "hp": 3000 }
-	},
-
-	{
-		"level_id": 5,
-		"waves": [
-			[
-				{ "hp": 1600, "amount": 10 },
-				{ "hp": 3200, "amount": 3 }
-			],
-			[
-				{ "hp": 2400, "amount": 10 },
-				{ "hp": 4000, "amount": 3 }
-			]
-		],
-		"boss": { "hp": 3500 }
-	},
-
-	{
-		"level_id": 6,
-		"waves": [
-			[
-				{ "hp": 3200, "amount": 10 },
-				{ "hp": 6400, "amount": 3 }
-			],
-			[
-				{ "hp": 4800, "amount": 10 },
-				{ "hp": 8000, "amount": 3 }
-			]
-		],
-		"boss": { "hp": 4000 }
-	}
+  {
+    "level_id": 1,
+    "waves": [
+      [
+        {"type": "Enemy", "hp": 100, "amount": 5}
+      ]
+    ],
+    "boss": {"hp": 800}
+  },
+  {
+    "level_id": 2,
+    "waves": [
+      [
+        {"type": "Enemy", "hp": 150, "amount": 6}
+      ]
+    ],
+    "boss": {"hp": 1200}
+  },
+  {
+    "level_id": 3,
+    "waves": [
+      [
+        {"type": "Enemy", "hp": 200, "amount": 6},
+        {"type": "HealerEnemy", "hp": 80, "amount": 1}
+      ],
+      [
+        {"type": "Enemy", "hp": 250, "amount": 4}
+      ]
+    ],
+    "boss": {"hp": 1600}
+  },
+  {
+    "level_id": 4,
+    "waves": [
+      [
+        {"type": "Enemy", "hp": 300, "amount": 5},
+        {"type": "HealerEnemy", "hp": 100, "amount": 2}
+      ],
+      [
+        {"type": "Enemy", "hp": 350, "amount": 4}
+      ]
+    ],
+    "boss": {"hp": 2000}
+  },
+  {
+    "level_id": 5,
+    "waves": [
+      [
+        {"type": "Enemy", "hp": 400, "amount": 6},
+        {"type": "HealerEnemy", "hp": 150, "amount": 2}
+      ],
+      [
+        {"type": "Enemy", "hp": 450, "amount": 4}
+      ]
+    ],
+    "boss": {"hp": 2600}
+  },
+  {
+    "level_id": 6,
+    "waves": [
+      [
+        {"type": "Enemy", "hp": 500, "amount": 8},
+        {"type": "HealerEnemy", "hp": 200, "amount": 3}
+      ],
+      [
+        {"type": "Enemy", "hp": 600, "amount": 5},
+        {"type": "HealerEnemy", "hp": 250, "amount": 2}
+      ]
+    ],
+    "boss": {"hp": 3500}
+  }
 ]

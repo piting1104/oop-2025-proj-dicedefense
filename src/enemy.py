@@ -64,3 +64,21 @@ class Enemy:
 class Boss(Enemy):
 	def __init__(self, pos: Vector2, hp: int):
 		super().__init__(pos, hp, moving_speed=1.3, resize=1.2)
+
+class HealerEnemy(Enemy):
+    def __init__(self, pos: Vector2, hp: int, healing_amount=10, healing_range=100, healing_cooldown=50):
+        super().__init__(pos, hp, moving_speed=1.4, resize=1.0)
+        self.healing_amount = healing_amount
+        self.healing_range = healing_range
+        self.healing_cooldown = healing_cooldown
+        self.healing_clock = 0
+
+    def heal_others(self, enemies):
+        self.healing_clock += 1
+        if self.healing_clock < self.healing_cooldown:
+            return
+        self.healing_clock = 0
+
+        for enemy in enemies:
+            if enemy is not self and (self.pos - enemy.pos).length() <= self.healing_range:
+                enemy.hp += self.healing_amount

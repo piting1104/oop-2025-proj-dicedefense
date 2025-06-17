@@ -6,6 +6,8 @@ from src.scene import Scene
 
 def main():
 	pygame.init()
+	print("程式啟動中...")
+
 	screen = pygame.display.set_mode((WIDTH, HEIGHT))
 	pygame.display.set_caption("Dice Defense")
 	font_manager.init_fonts()
